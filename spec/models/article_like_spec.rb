@@ -33,7 +33,7 @@ RSpec.describe ArticleLike, type: :model do
   context "ユーザーの id が存在しないとき" do
     let(:article_like) { build(:article_like, user_id: nil, article_id: article.id) }
     let(:article) { create(:article) }
-    fit "いいねできない" do
+    it "いいねできない" do
       expect(article_like).to be_invalid
       expect(article_like.errors.messages[:user]).to eq ["must exist"]
       expect(article_like.errors.messages[:user_id]).to eq ["can't be blank"]
