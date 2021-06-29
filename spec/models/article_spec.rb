@@ -20,8 +20,6 @@
 #
 require "rails_helper"
 
-require "rails_helper"
-
 RSpec.describe Article, type: :model do
   context "記事のタイトルと本文が入力されているとき" do
     let(:article) { build(:article) }
