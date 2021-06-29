@@ -52,7 +52,7 @@ RSpec.describe "Api::V1::Articles", type: :request do
       let(:current_user) { create(:user) }
       before { allow_any_instance_of(Api::V1::BaseApiController).to receive(:current_user).and_return(current_user) }
 
-      fit "記事が作成される" do
+      it "記事が作成される" do
         expect { subject }.to change { Article.count }.by(1)
         res = JSON.parse(response.body)
         expect(res["title"]).to eq params[:article][:title]
@@ -66,8 +66,29 @@ RSpec.describe "Api::V1::Articles", type: :request do
       let(:current_user) { create(:user) }
 
       before { allow_any_instance_of(Api::V1::BaseApiController).to receive(:current_user).and_return(current_user) }
-      fit "エラーする" do
-        expect{ subject }.to raise_error ActionController::ParameterMissing     end
+
+      it "エラーする" do
+        expect { subject }.to raise_error ActionController::ParameterMissing
+      end
+    end
+  end
+
+  describe "PATCH /api/v1/articles/:id" do
+    subject { patch(api_v1_article_path(article_id), params: params) }
+
+    context "記事を更新するとき" do
+      let(:params) { { article: { title: "foo", created_at: 1.day.ago } } }
+      let(:article_id) { article.id }
+      let(:article) { create(:article, user: current_user) }
+      let(:current_user) { create(:user) }
+
+      before { allow_any_instance_of(Api::V1::BaseApiController).to receive(:current_user).and_return(current_user) }
+
+      it "適切な値のみ更新される" do
+        expect { subject }.to change { article.reload.title }.from(article.title).to(params[:article][:title]) &
+                              not_change { article.reload.body } &
+                              not_change { article.reload.created_at }
+      end
     end
   end
 end

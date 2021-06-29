@@ -14,6 +14,7 @@
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|
+  RSpec::Matchers.define_negated_matcher :not_change, :change
   config.define_derived_metadata do |meta|
     meta[:aggregate_failures] = true unless meta.has_key?(:aggregate_failures)
   end
