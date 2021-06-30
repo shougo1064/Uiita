@@ -11,7 +11,7 @@ RSpec.describe "Api::V1::Articles::Drafts", type: :request do
     let!(:article3) { create(:article, :draft, user: current_user) }
     let!(:article4) { create(:article, :published, user: current_user) }
     let!(:article5) { create(:article, :draft) }
-    fit "自分が書いた下書きの一覧のみが取得できる" do
+    it "自分が書いた下書きの一覧のみが取得できる" do
       subject
       res = JSON.parse(response.body)
       expect(response).to have_http_status(:ok)
@@ -27,7 +27,7 @@ RSpec.describe "Api::V1::Articles::Drafts", type: :request do
     context "指定した id の記事が存在して" do
       context "対象の記事が自分が書いた下書き記事のとき" do
         let(:article) { create(:article, :draft, user: current_user) }
-        fit "記事の詳細を取得できる" do
+        it "記事の詳細を取得できる" do
           subject
           res = JSON.parse(response.body)
           expect(res["id"]).to eq article.id
@@ -43,7 +43,7 @@ RSpec.describe "Api::V1::Articles::Drafts", type: :request do
 
       context "対象の記事が他のユーザーが書いた下書き記事のとき" do
         let(:article) { create(:article, :draft) }
-        fit "エラーする" do
+        it "エラーする" do
           expect { subject }.to raise_error ActiveRecord::RecordNotFound
         end
       end
