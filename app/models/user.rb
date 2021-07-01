@@ -42,5 +42,6 @@ class User < ApplicationRecord
   has_many :articles, dependent: :destroy
   has_many :comments, dependent: :destroy
   has_many :article_likes, dependent: :destroy
+  has_many :liked_posts, through: :article_likes, source: :post
   validates :name, presence: true, uniqueness: { case_sensitive: false }, length: { maximum: 30 }
 end
