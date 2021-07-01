@@ -8,7 +8,7 @@ module Api::V1
 
     def show
       article = Article.published.find(params[:id])
-      render json: article, serializer: Api::V1::CommentSerializer
+      render json: article, serializer: Api::V1::ArticleSerializer
     end
 
     def create
