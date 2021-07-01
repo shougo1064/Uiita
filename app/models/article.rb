@@ -22,6 +22,7 @@ class Article < ApplicationRecord
   belongs_to :user
   has_many :comments, dependent: :destroy
   has_many :article_likes, dependent: :destroy
+  has_many :liked_users, through: :article_likes, source: :user
 
   validates :title, presence: true, length: { maximum: 50 }
   validates :body, presence: true
