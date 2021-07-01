@@ -5,7 +5,7 @@ Rails.application.routes.draw do
         registrations: "api/v1/auth/registrations",
       }
       resources :comments, only: [:create]
-
+      resources :article_likes, only: [:create]
       namespace :articles do
         resources :drafts, only: [:index, :show]
       end
