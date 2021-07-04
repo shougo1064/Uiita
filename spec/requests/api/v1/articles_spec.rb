@@ -134,7 +134,7 @@ RSpec.describe "Api::V1::Articles", type: :request do
     let!(:article3) { create(:article, :published, title: "xxx", body: "xxx", created_at: 3.days.ago) }
     context "キーワードを指定したとき" do
       let(:params) { { "keyword": "TT", "sort": "created_at DESC" } }
-      fit "公開状態でタイトルまたは本文にキーワードを含まれている記事が作成順に一覧で取得できる" do
+      it "公開状態でタイトルまたは本文にキーワードを含まれている記事が作成順に一覧で取得できる" do
         subject
         res = JSON.parse(response.body)
         expect(response).to have_http_status(:ok)
@@ -146,7 +146,7 @@ RSpec.describe "Api::V1::Articles", type: :request do
 
     context "キーワードが指定されていないとき" do
       let(:params) { { "keyword": nil, "sort": "created_at DESC" } }
-      fit "全ての公開状態の記事の一覧が作成順で取得できる" do
+      it "全ての公開状態の記事の一覧が作成順で取得できる" do
         subject
         res = JSON.parse(response.body)
         expect(response).to have_http_status(:ok)
