@@ -27,6 +27,18 @@ module Api::V1
       article.destroy!
     end
 
+    def search
+      # フォームで入力された、キーワードをパラメータで取得
+      keyword = params[:keyword]
+
+      # || は、左辺を評価して false だから、右辺を評価した。つまり、渡ってきた sort のパラメータの値が nil の場合、created_at desc をデフォとする。
+      sort = params[:sort] || "created_at DESC"
+
+      # 入力された値をLIKE 句により各カラムと一致したものを抽出する。
+      articles = Article.published.where("title LIKE(?) or body LIKE(?)", "%#{keyword}%", "%#{keyword}%").order(sort)
+      render json: articles, each_serializer: Api::V1::ArticleSerializer
+    end
+
     private
 
       def article_params
