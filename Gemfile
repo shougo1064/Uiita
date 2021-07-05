@@ -5,13 +5,13 @@ ruby "2.7.2"
 
 gem "active_model_serializers", "~> 0.10.0"
 gem "bootsnap", ">= 1.4.2", require: false
+gem "config"
 gem "devise_token_auth"
 gem "pg"
 gem "puma", "~> 4.1"
 gem "rails", "~> 6.0.3", ">= 6.0.3.2"
 gem "turbolinks", "~> 5"
 gem "webpacker", "~> 4.0"
-gem "config"
 
 group :development, :test do
   gem "factory_bot_rails"
