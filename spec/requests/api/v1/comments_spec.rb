@@ -1,18 +1,6 @@
 require "rails_helper"
 
 RSpec.describe "Api::V1::Comments", type: :request do
-  describe "GET /api/v1/comments" do
-    subject { get(api_v1_comments_path(article_id)) }
-
-    let(:article_id) { article.id }
-    let(:article) { create(:article) }
-    let(:comment1) { create(:comment, article_id: article.id, created_at: 1.days.ago) }
-    let(:comment2) { create(:comment, article_id: article.id, created_at: 2.days.ago) }
-    let(:comment3) { create(:comment, article_id: article.id) }
-    it "投稿順にコメントが一覧で取得できる" do
-      subject
-    end
-  end
 
   describe "POST /api/v1/comments" do
     subject { post(api_v1_comments_path, params: params, headers: headers) }
