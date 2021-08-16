@@ -10,9 +10,11 @@
             :auto-update="60"
           />
           <v-spacer></v-spacer>
-          <v-btn text fab small>
-            <v-icon color="#3085DE">fas fa-trash-alt</v-icon>
-          </v-btn>
+          <template v-if="isShowBtn">
+            <v-btn text fab small @click="deleteArticle">
+              <v-icon color="#3085DE">fas fa-trash-alt</v-icon>
+            </v-btn>
+          </template>
         </v-layout>
         <h1 :class="$style.article_title">{{ article.title }}</h1>
         <div :class="$style.article_body_container">
@@ -36,6 +38,13 @@ export default {
     article() {
       return this.$store.getters['article/article']
     },
+  },
+
+  isShowBtn() {
+    const currentUserEmail = this.$store.getters['user/headers'].uid
+    const result = currentUserEmail === this.article?.user?.email
+
+    return result
   },
   async created() {
     const articleId = this.$route.params.id
