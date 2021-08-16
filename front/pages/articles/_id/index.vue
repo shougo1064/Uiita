@@ -48,7 +48,7 @@ export default {
   margin-top: 30px;
   background: #fff;
   margin-bottom: 20px;
-  width: 60px;
+  width: 60%;
 }
 .article_layout {
   margin: 0 20px;
