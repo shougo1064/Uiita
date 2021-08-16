@@ -2,11 +2,26 @@
   <v-app>
     <v-app-bar app dark color="#3085DE">
       <nuxt-link to="/" :class="$style.header_link">
-        <v-toolbar-title :class="$style.app_title">Uiita </v-toolbar-title>
+        <v-toolbar-title :class="$style.app_title"
+          >WonderfulEditor
+        </v-toolbar-title>
       </nuxt-link>
       <v-spacer></v-spacer>
-      <v-btn text :class="$style.register">ユーザー登録</v-btn>
-      <v-btn text :class="$style.login">ログイン</v-btn>
+
+      <template v-if="isSignedIn">
+        <nuxt-link to="/">
+          <v-btn text :class="$style.register">投稿する</v-btn>
+        </nuxt-link>
+        <v-btn text :class="$style.login">ログアウト</v-btn>
+      </template>
+      <template v-else>
+        <nuxt-link to="/sign_up">
+          <v-btn text :class="$style.register">ユーザー登録</v-btn>
+        </nuxt-link>
+        <nuxt-link to="/sign_in">
+          <v-btn text :class="$style.login">ログイン</v-btn>
+        </nuxt-link>
+      </template>
     </v-app-bar>
     <v-main>
       <v-container fluid :class="$style.container">
@@ -15,6 +30,17 @@
     </v-main>
   </v-app>
 </template>
+
+<script>
+export default {
+  computed: {
+    isSignedIn() {
+      return this.$store.getters['user/isSignedIn']
+    },
+  },
+}
+</script>
+
 <style lang="scss" module>
 .header_link {
   text-decoration: none;
