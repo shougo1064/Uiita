@@ -48,18 +48,22 @@ export default {
       return this.$store.getters['article/article']
     },
   },
-
+  // 暫定でログインユーザーと記事を書いたユーザーが比較できる要素として設定
+  // 本来は user の id などをエンコードしておいて比較する方が良さそう
   isShowBtn() {
     const currentUserEmail = this.$store.getters['user/headers'].uid
     const result = currentUserEmail === this.article?.user?.email
-
     return result
   },
   async created() {
     const articleId = this.$route.params.id
-    await this.$store.dispatch('article/fetchArticle', articleId).then(() => {
+    try {
+      await this.$store.dispatch('article/fetchArticle', articleId)
       this.isInitialized = true
-    })
+    } catch (err) {
+      // 暫定的な Error 表示
+      alert(err.response.statusText)
+    }
   },
   methods: {
     moveToEditArticlePage(id) {
@@ -68,21 +72,18 @@ export default {
     async deleteArticle() {
       const result = confirm('この記事を削除してもよろしいですか？')
       if (result) {
-        await this.$store
-          .dispatch('article/deleteArticle', this.article.id)
-          .then(() => {
-            this.$router.push('/')
-          })
-          .catch((e) => {
-            // 暫定的な Error 表示
-            alert(e.response.statusText)
-          })
+        try {
+          await this.$store.dispatch('article/deleteArticle', this.article.id)
+          this.$router.push('/')
+        } catch (err) {
+          // 暫定的な Error 表示
+          alert(err.response.statusText)
+        }
       }
     },
   },
 }
 </script>
-
 <style lang="scss" module>
 .article_container {
   margin-top: 30px;
@@ -111,7 +112,6 @@ export default {
   width: 100%;
   white-space: pre-wrap;
 }
-
 .editBtn {
   margin-right: 12px;
 }
