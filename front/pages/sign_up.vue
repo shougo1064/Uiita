@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-row class="layout" justify="center">
+    <v-row :class="$style.layout">
       <v-col cols="8">
         <h2 class="mb-5">ユーザー登録</h2>
         <v-form>
@@ -39,6 +39,7 @@
             nuxt
             :loading="loading"
             class="white--text font-weight-bold"
+            @click="submit"
             >登録</v-btn
           >
         </v-form>
@@ -46,6 +47,41 @@
     </v-row>
   </v-container>
 </template>
+
+<script>
+export default {
+  data() {
+    return {
+      name: '',
+      loading: false,
+      email: '',
+      password: '',
+    }
+  },
+  methods: {
+    async submit() {
+      this.loading = true
+      const params = {
+        name: this.name,
+        email: this.email,
+        password: this.password,
+      }
+      await this.$store
+        .dispatch(`user/signUp`, params)
+        .then(() => {
+          this.$router.push('/')
+        })
+        .catch((e) => {
+          // 暫定的な Error 表示
+          alert(e.response.data.errors.full_messages)
+        })
+        .finally(() => {
+          this.loading = false
+        })
+    },
+  },
+}
+</script>
 
 <style module lang="scss">
 .layout {
