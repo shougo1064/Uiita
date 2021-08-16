@@ -20,4 +20,7 @@ export const actions = {
       commit('setArticles', data)
     })
   },
+  async createArticle(_, params) {
+    await this.$axios.post('api/v1/articles', params)
+  },
 }
