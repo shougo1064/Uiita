@@ -1,68 +1,115 @@
 <template>
-  <v-app>
-    <v-app-bar app dark color="#3085DE">
-      <nuxt-link to="/" :class="$style.header_link">
-        <v-toolbar-title :class="$style.app_title">Uiita </v-toolbar-title>
-      </nuxt-link>
-      <v-spacer></v-spacer>
-      <template v-if="isSignedIn">
-        <nuxt-link to="/writing_article">
-          <v-btn text :class="$style.register">投稿する</v-btn>
-        </nuxt-link>
-        <v-btn text :class="$style.login" @click="signOut">ログアウト</v-btn>
-      </template>
-      <template v-else>
-        <nuxt-link to="/sign_up">
-          <v-btn text :class="$style.register">ユーザー登録</v-btn>
-        </nuxt-link>
-        <nuxt-link to="/sign_in">
-          <v-btn text :class="$style.login">ログイン</v-btn>
-        </nuxt-link>
-      </template>
-    </v-app-bar>
-    <v-main>
-      <v-container fluid :class="$style.container">
-        <nuxt />
-      </v-container>
-    </v-main>
-  </v-app>
+  <form id="edit-article" :class="$style.article_form">
+    <v-text-field
+      v-model="article.title"
+      outlined
+      single-line
+      name="title"
+      placeholder="タイトル"
+      :class="$style.title_form"
+    ></v-text-field>
+    <div :class="$style.edit_area">
+      <v-textarea
+        v-model="article.body"
+        outlined
+        no-resize
+        hide-details
+        height="100%"
+        name="body"
+        placeholder="記事の内容を入力してください"
+        class="body-form"
+      ></v-textarea>
+    </div>
+    <div :class="$style.create_btn_area">
+      <v-btn
+        color="#3085DE"
+        class="font-weight-bold white--text"
+        @click="updateArticle(article.id)"
+        >記事を更新
+      </v-btn>
+    </div>
+  </form>
 </template>
 
 <script>
 export default {
-  computed: {
-    isSignedIn() {
-      return this.$store.getters['user/isSignedIn']
-    },
+  middleware: ['authed'],
+  data() {
+    return {
+      article: {
+        id: '',
+        title: '',
+        body: '',
+      },
+      loading: false,
+    }
+  },
+  async created() {
+    await this.fetchArticle()
   },
   methods: {
-    signOut() {
-      this.$store.dispatch('user/signOut')
-      this.$router.push('/sign_in')
+    async fetchArticle() {
+      const articleId = this.$route.params.id
+      try {
+        await this.$store.dispatch('article/fetchArticle', articleId)
+        const article = this.$store.getters['article/article']
+        this.article.id = article.id
+        this.article.title = article.title
+        this.article.body = article.body
+      } catch (err) {
+        // 暫定的な Error 表示
+        alert(err.response.data.errors.full_messages)
+      }
+    },
+    async updateArticle(id) {
+      this.loading = true
+      const params = {
+        title: this.article.title,
+        body: this.article.body,
+      }
+      try {
+        await this.$store.dispatch('article/updateArticle', { id, params })
+        this.$router.push(`/articles/${id}`)
+      } catch (err) {
+        // 暫定的な Error 表示
+        alert(err.response.statusText)
+      } finally {
+        this.loading = false
+      }
     },
   },
 }
 </script>
 
 <style lang="scss" module>
-.header_link {
-  text-decoration: none;
+.article_form {
+  margin: 5px;
+  height: calc(100% - 64px - 10px);
+  display: flex;
+  flex-flow: column;
+  width: 100%;
 }
-.app_title {
-  color: #fff;
-  font-weight: bold;
-  font-size: 24px;
+.title_form {
+  flex: none;
+  background: #fff;
 }
-.register {
-  border: 2px solid #fff;
-  border-radius: 5px;
-  font-weight: bold;
-}
-.login {
-  font-weight: bold;
-}
-.container {
-  background: #ecf6fe;
+.edit_area {
   height: 100%;
+  display: flex;
+  overflow: hidden;
+  background: #fff;
+  margin-bottom: 10px;
+}
+.create_btn_area {
+  text-align: right;
+}
+</style>
+
+<style lang="scss">
+#edit-article {
+  body-form > .v-text-field fieldset,
+  .v-text-field .v-input__control {
+    height: 100%;
+  }
 }
 </style>
