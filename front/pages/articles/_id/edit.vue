@@ -34,6 +34,7 @@
 <script>
 export default {
   middleware: ['authed'],
+
   data() {
     return {
       article: {
@@ -41,47 +42,48 @@ export default {
         title: '',
         body: '',
       },
+
       loading: false,
     }
   },
+
   async created() {
     await this.fetchArticle()
   },
+
   methods: {
     async fetchArticle() {
       const articleId = this.$route.params.id
-      await this.$store
-        .dispatch('article/fetchArticle', articleId)
-        .then(() => {
-          const article = this.$store.getters['article/article']
-          this.article.id = article.id
-          this.article.title = article.title
-          this.article.body = article.body
-        })
-        .catch((e) => {
-          // 暫定的な Error 表示
-          alert(e.response.data.errors.full_messages)
-        })
+      try {
+        await this.$store.dispatch('article/fetchArticle', articleId)
+
+        const article = this.$store.getters['article/article']
+        this.article.id = article.id
+        this.article.title = article.title
+        this.article.body = article.body
+      } catch (err) {
+        // 暫定的な Error 表示
+        alert(err.response.data.errors.full_messages)
+      }
     },
+
     async updateArticle(id) {
       this.loading = true
+
       const params = {
         title: this.article.title,
         body: this.article.body,
-        status: 'published',
       }
-      await this.$store
-        .dispatch('article/updateArticle', { id, params })
-        .then(() => {
-          this.$router.push(`/articles/${id}`)
-        })
-        .catch((e) => {
-          // 暫定的な Error 表示
-          alert(e.response.statusText)
-        })
-        .finally(() => {
-          this.loading = false
-        })
+
+      try {
+        await this.$store.dispatch('article/updateArticle', { id, params })
+        this.$router.push(`/articles/${id}`)
+      } catch (err) {
+        // 暫定的な Error 表示
+        alert(err.response.statusText)
+      } finally {
+        this.loading = false
+      }
     },
   },
 }
@@ -95,10 +97,12 @@ export default {
   flex-flow: column;
   width: 100%;
 }
+
 .title_form {
   flex: none;
   background: #fff;
 }
+
 .edit_area {
   height: 100%;
   display: flex;
@@ -106,6 +110,7 @@ export default {
   background: #fff;
   margin-bottom: 10px;
 }
+
 .create_btn_area {
   text-align: right;
 }
