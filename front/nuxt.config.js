@@ -53,7 +53,7 @@ export default {
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
-    baseURL: 'https://uiita0001.herokuapp.com',
+    baseURL: 'https://git.heroku.com/uiita.git',
   },
 
   // PWA module configuration: https://go.nuxtjs.dev/pwa
